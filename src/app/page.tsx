@@ -4,7 +4,7 @@ import { useState } from "react"
 import { v4 as uuidv4 } from "uuid"
 import { Todo } from "@/lib/types"
 import { TodoList } from "@/components/todo-list"
-import { TodoForm } from "@/components/todo-form"
+import { TodoFormDialog } from "@/components/todo-form-dialog"
 
 const TODOS: Todo[] = [
   {
@@ -41,7 +41,7 @@ export default function RootPage() {
         {/* hero section */}
         <div className="flex justify-between py-4">
           <h1 className="text-3xl font-bold text-center">Todo App</h1>
-          <TodoForm onSubmit={handleAddTodo} />
+          <TodoFormDialog onSubmit={handleAddTodo} />
         </div>
 
         {/* todo list */}

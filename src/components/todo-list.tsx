@@ -1,5 +1,5 @@
 import { Todo } from "../lib/types"
-import { TodoItem } from "./todo-item"
+import { TodoCard } from "./todo-card"
 
 type Props = {
   todos: Todo[]
@@ -17,7 +17,7 @@ export function TodoList({ todos }: Readonly<Props>) {
   return (
     <div className="space-y-4">
       {todos.map((todo) => (
-        <TodoItem key={todo.id} todo={todo} />
+        <TodoCard key={todo.id} todo={todo} />
       ))}
     </div>
   )

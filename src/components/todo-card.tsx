@@ -20,7 +20,7 @@ type Props = {
   todo: Todo
 }
 
-export function TodoItem({ todo }: Readonly<Props>) {
+export function TodoCard({ todo }: Readonly<Props>) {
   const getDistanceToNow = (date: Date) => {
     return formatDistanceToNow(date, { addSuffix: true })
   }

@@ -34,7 +34,7 @@ type Props = {
   onSubmit: (todo: Todo) => void
 }
 
-export function TodoForm({ onSubmit }: Readonly<Props>) {
+export function TodoFormDialog({ onSubmit }: Readonly<Props>) {
   const [open, setOpen] = useState(false)
   const [title, setTitle] = useState<string>("")
   const [description, setDescription] = useState<string>("")
