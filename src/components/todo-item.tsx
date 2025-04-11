@@ -58,7 +58,7 @@ export function TodoItem({ todo }: Readonly<Props>) {
       </CardContent>
 
       <CardFooter>
-        <div className="flex flex-col w-full pt-3 border-t text-xs text-muted-foreground">
+        <div className="flex flex-col w-full pt-6 border-t text-xs text-muted-foreground">
           <div className="flex flex-col sm:flex-row sm:justify-between">
             {/* completed metadata */}
             <div className="flex items-center">
