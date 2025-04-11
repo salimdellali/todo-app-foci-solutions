@@ -2,10 +2,9 @@
 
 import { useState } from "react"
 import { v4 as uuidv4 } from "uuid"
-import { Plus } from "lucide-react"
 import { Todo } from "@/lib/types"
 import { TodoList } from "@/components/todo-list"
-import { Button } from "@/components/ui/button"
+import { TodoForm } from "@/components/todo-form"
 
 const TODOS: Todo[] = [
   {
@@ -31,21 +30,18 @@ const TODOS: Todo[] = [
 export default function RootPage() {
   const [todos, setTodos] = useState<Todo[]>(TODOS)
 
+  function handleAddTodo(newTodo: Todo) {
+    const newTodos = [...todos, newTodo]
+    setTodos(newTodos)
+  }
+
   return (
     <main className="min-h-screen bg-gray-100">
       <div className="max-w-4xl mx-auto px-4">
         {/* hero section */}
         <div className="flex justify-between py-4">
           <h1 className="text-3xl font-bold text-center">Todo App</h1>
-          <Button
-            className="hover:shadow-lg transition-all duration-300"
-            onClick={() => {
-              alert("Add todo clicked")
-            }}
-          >
-            <Plus />
-            <span>Add Todo</span>
-          </Button>
+          <TodoForm onSubmit={handleAddTodo} />
         </div>
 
         {/* todo list */}
