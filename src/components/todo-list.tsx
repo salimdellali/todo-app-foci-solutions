@@ -8,7 +8,7 @@ type Props = {
 export function TodoList({ todos }: Readonly<Props>) {
   if (!todos.length) {
     return (
-      <div className="flex flex-col border border-dashed h-40 items-center justify-center">
+      <div className="flex flex-col border border-dashed rounded-2xl h-60 items-center justify-center bg-white text-gray-500">
         <p className="text-xl font-bold">No Todos available</p>
         <p>Get started by creating your first Todo</p>
       </div>

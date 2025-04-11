@@ -1,8 +1,13 @@
-import { v4 as uuidv4 } from "uuid"
-import { Todo } from "../lib/types"
-import { TodoList } from "../components/todo-list"
+"use client"
 
-const todos: Todo[] = [
+import { useState } from "react"
+import { v4 as uuidv4 } from "uuid"
+import { Plus } from "lucide-react"
+import { Todo } from "@/lib/types"
+import { TodoList } from "@/components/todo-list"
+import { Button } from "@/components/ui/button"
+
+const TODOS: Todo[] = [
   {
     id: uuidv4(),
     title: "Complete FOCI Solutions project",
@@ -24,5 +29,28 @@ const todos: Todo[] = [
 ]
 
 export default function RootPage() {
-  return <TodoList todos={todos} />
+  const [todos, setTodos] = useState<Todo[]>(TODOS)
+
+  return (
+    <main className="min-h-screen bg-gray-100">
+      <div className="max-w-4xl mx-auto px-4">
+        {/* hero section */}
+        <div className="flex justify-between py-4">
+          <h1 className="text-3xl font-bold text-center">Todo App</h1>
+          <Button
+            className="hover:shadow-lg transition-all duration-300"
+            onClick={() => {
+              alert("Add todo clicked")
+            }}
+          >
+            <Plus />
+            <span>Add Todo</span>
+          </Button>
+        </div>
+
+        {/* todo list */}
+        <TodoList todos={todos} />
+      </div>
+    </main>
+  )
 }
