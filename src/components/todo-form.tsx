@@ -48,6 +48,7 @@ export function TodoForm() {
       title,
       description,
       dueDate,
+      completedAt: null,
       createdAt: new Date(),
       updatedAt: new Date(),
     }
