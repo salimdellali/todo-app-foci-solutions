@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { Todo } from "@/lib/types"
 import { TodoList } from "@/components/todo-list"
 import { TodoFormDialog } from "@/components/todo-form-dialog"
+import { TodoCardSkeleton } from "@/components/todo-card-skeleton"
 import getAllTodos from "../actions/todos/get-all-todos"
 
 export default function RootPage() {
@@ -50,7 +51,9 @@ export default function RootPage() {
 
         {/* todo list */}
         {isLoading ? (
-          <div className="text-center py-8">Loading todos...</div>
+          <div className="grid gap-4">
+            <TodoCardSkeleton />
+          </div>
         ) : error ? (
           <div className="text-center py-8">{error}</div>
         ) : (
