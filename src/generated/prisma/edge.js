@@ -140,6 +140,10 @@ const config = {
         "fromEnvVar": null,
         "value": "darwin-arm64",
         "native": true
+      },
+      {
+        "fromEnvVar": null,
+        "value": "rhel-openssl-3.0.x"
       }
     ],
     "previewFeatures": [],
@@ -166,8 +170,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider  = \"postgresql\"\n  url       = env(\"DATABASE_URL\")\n  directUrl = env(\"DIRECT_URL\") // Needed for Supabase to work\n}\n\nmodel Todo {\n  id          String    @id @default(uuid())\n  title       String\n  description String\n  dueDate     DateTime  @map(\"due_date\")\n  completedAt DateTime? @map(\"completed_at\")\n  createdAt   DateTime  @default(now()) @map(\"created_at\")\n  updatedAt   DateTime  @updatedAt @map(\"updated_at\")\n\n  @@map(\"todos\")\n}\n",
-  "inlineSchemaHash": "1aea805d7c896bdba9b0784984ba8c64cd1ce9bed1814477b17dfa6198d2e390",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider      = \"prisma-client-js\"\n  output        = \"../src/generated/prisma\"\n  binaryTargets = [\"native\", \"rhel-openssl-3.0.x\"]\n}\n\ndatasource db {\n  provider  = \"postgresql\"\n  url       = env(\"DATABASE_URL\")\n  directUrl = env(\"DIRECT_URL\") // Needed for Supabase to work\n}\n\nmodel Todo {\n  id          String    @id @default(uuid())\n  title       String\n  description String\n  dueDate     DateTime  @map(\"due_date\")\n  completedAt DateTime? @map(\"completed_at\")\n  createdAt   DateTime  @default(now()) @map(\"created_at\")\n  updatedAt   DateTime  @updatedAt @map(\"updated_at\")\n\n  @@map(\"todos\")\n}\n",
+  "inlineSchemaHash": "9a954b3986e95245294f751060eebc454f5c16bbe359100082d5b1758d4e730c",
   "copyEngine": true
 }
 config.dirname = '/'
