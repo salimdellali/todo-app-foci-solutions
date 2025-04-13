@@ -1,16 +1,16 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { toast } from "sonner"
 import { Todo } from "@/lib/types"
 import { TodoList } from "@/components/todo-list"
 import { TodoFormDialog } from "@/components/todo-form-dialog"
 import { TodoCardSkeleton } from "@/components/todo-card-skeleton"
-import getAllTodos from "../actions/todos/get-all-todos"
+import getAllTodos from "@/actions/todos/get-all-todos"
 
 export default function RootPage() {
   const [todos, setTodos] = useState<Todo[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     async function fetchTodos() {
@@ -20,13 +20,11 @@ export default function RootPage() {
 
       if (error) {
         setTodos([])
-        setError(error)
+        toast.error(error)
       }
 
       if (todos) {
         setTodos(todos)
-        console.log(todos)
-        setError(null)
       }
 
       setIsLoading(false)
@@ -50,15 +48,7 @@ export default function RootPage() {
         </div>
 
         {/* todo list */}
-        {isLoading ? (
-          <div className="grid gap-4">
-            <TodoCardSkeleton />
-          </div>
-        ) : error ? (
-          <div className="text-center py-8">{error}</div>
-        ) : (
-          <TodoList todos={todos} />
-        )}
+        {isLoading ? <TodoCardSkeleton /> : <TodoList todos={todos} />}
       </div>
     </main>
   )
