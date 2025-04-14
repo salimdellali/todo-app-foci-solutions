@@ -15,19 +15,60 @@ import {
 } from "lucide-react"
 import { Badge } from "./ui/badge"
 import { Button } from "./ui/button"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 type Props = {
   todo: Todo
   onDelete: (todo: Todo) => void
 }
 
+// Internal Delete Dialog Component
+function TodoDeleteDialogTrigger({ todo, onDelete }: Readonly<Props>) {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="rounded-full text-destructive hover:bg-destructive/20"
+        >
+          <Trash2 />
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>You are about to delete a Todo</AlertDialogTitle>
+          <AlertDialogDescription>
+            Are you sure you want to delete &quot;{todo.title}&quot; ?
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={() => onDelete(todo)}
+            className="bg-destructive/80 hover:bg-destructive"
+          >
+            Delete
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  )
+}
+
 export function TodoCard({ todo, onDelete }: Readonly<Props>) {
   const getDistanceToNow = (date: Date) => {
     return formatDistanceToNow(date, { addSuffix: true })
-  }
-
-  const handleDelete = () => {
-    onDelete(todo)
   }
 
   return (
@@ -44,14 +85,7 @@ export function TodoCard({ todo, onDelete }: Readonly<Props>) {
           <Button variant="ghost" size="icon" className="rounded-full">
             <Pencil />
           </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full text-destructive hover:bg-destructive/20"
-            onClick={handleDelete}
-          >
-            <Trash2 />
-          </Button>
+          <TodoDeleteDialogTrigger todo={todo} onDelete={onDelete} />
         </div>
       </CardHeader>
 
