@@ -1,6 +1,6 @@
 import { pgTable, uuid, text, timestamp } from "drizzle-orm/pg-core"
 
-export const todos = pgTable("todos", {
+export const todosTable = pgTable("todos", {
   id: uuid("id").primaryKey().defaultRandom(),
   title: text("title").notNull(),
   description: text("description"),
@@ -10,5 +10,5 @@ export const todos = pgTable("todos", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 })
 
-export type Todo = typeof todos.$inferSelect
-export type NewTodo = typeof todos.$inferInsert
+export type Todo = typeof todosTable.$inferSelect
+export type TodoInput = Pick<Todo, "title" | "description" | "dueDate">

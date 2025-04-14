@@ -2,8 +2,8 @@
 
 import { useState } from "react"
 import { addDays, format } from "date-fns"
-import { v4 as uuidv4 } from "uuid"
 import { CalendarIcon, Plus } from "lucide-react"
+import { toast } from "sonner"
 import {
   Dialog,
   DialogContent,
@@ -28,10 +28,10 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Calendar } from "@/components/ui/calendar"
-import { Todo } from "@/lib/types"
+import { TodoInput } from "@/db/schema"
 
 type Props = {
-  onSubmit: (todo: Todo) => void
+  onSubmit: (todoInput: TodoInput) => void
 }
 
 export function TodoFormDialog({ onSubmit }: Readonly<Props>) {
@@ -40,27 +40,36 @@ export function TodoFormDialog({ onSubmit }: Readonly<Props>) {
   const [description, setDescription] = useState<string>("")
   const [dueDate, setDueDate] = useState<Date>()
 
-  const handleAddTodo = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    if (!dueDate) {
-      alert("Please select a due date")
+    // TODO: improve validation
+    // validate inputs
+    if (!title.trim) {
+      toast("Please enter a title")
       return
     }
 
-    const newTodo: Todo = {
-      id: uuidv4(),
+    if (!dueDate) {
+      toast("Please select a due date")
+      return
+    }
+    // inputs validated
+
+    // call add todo server action
+    onSubmit({
       title,
       description,
       dueDate,
-      completedAt: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    }
+    })
 
-    // TODO: add todo to the list
-    onSubmit(newTodo)
-    setOpen(false) // Close dialog after submission
+    // reset fields
+    setTitle("")
+    setDescription("")
+    setDueDate(undefined)
+
+    // Close dialog after submission
+    setOpen(false)
   }
 
   return (
@@ -75,7 +84,7 @@ export function TodoFormDialog({ onSubmit }: Readonly<Props>) {
         <DialogHeader>
           <DialogTitle>Add New Todo</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleAddTodo}>
+        <form onSubmit={handleSubmit}>
           <div className="space-y-4">
             {/* title seciton */}
             <div className="space-y-2">

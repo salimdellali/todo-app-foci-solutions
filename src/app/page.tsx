@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from "react"
 import { toast } from "sonner"
-import { Todo } from "@/db/schema"
+import { Todo, TodoInput } from "@/db/schema"
 import { TodoList } from "@/components/todo-list"
 import { TodoFormDialog } from "@/components/todo-form-dialog"
 import { TodoCardSkeleton } from "@/components/todo-card-skeleton"
-import getAllTodos from "@/actions/todos/get-all-todos"
+import { getAllTodos, createTodo } from "@/actions/todos"
 
 export default function RootPage() {
   const [todos, setTodos] = useState<Todo[]>([])
@@ -16,11 +16,11 @@ export default function RootPage() {
     async function fetchTodos() {
       setIsLoading(true)
 
-      const { todos, error } = await getAllTodos()
+      const { todos, errorMessage } = await getAllTodos()
 
-      if (error) {
+      if (errorMessage) {
         setTodos([])
-        toast.error(error)
+        toast.error(errorMessage)
       }
 
       if (todos) {
@@ -33,9 +33,25 @@ export default function RootPage() {
     fetchTodos()
   }, [])
 
-  function handleAddTodo(newTodo: Todo) {
-    const newTodos = [...todos, newTodo]
-    setTodos(newTodos)
+  async function handleAddTodo(todoInput: TodoInput) {
+    toast.promise(
+      async () => {
+        const { todo, errorMessage } = await createTodo(todoInput)
+        if (errorMessage) {
+          throw new Error(errorMessage)
+        }
+        if (todo) {
+          // insert newly added todo at the beginning
+          setTodos((prevTodos) => [todo, ...prevTodos])
+          return todo
+        }
+      },
+      {
+        loading: "Creating todo...",
+        error: (error) => error.message,
+        success: (todo) => `Todo "${todo!.title}" has been created`,
+      }
+    )
   }
 
   return (
