@@ -18,11 +18,16 @@ import { Button } from "./ui/button"
 
 type Props = {
   todo: Todo
+  onDelete: (todo: Todo) => void
 }
 
-export function TodoCard({ todo }: Readonly<Props>) {
+export function TodoCard({ todo, onDelete }: Readonly<Props>) {
   const getDistanceToNow = (date: Date) => {
     return formatDistanceToNow(date, { addSuffix: true })
+  }
+
+  const handleDelete = () => {
+    onDelete(todo)
   }
 
   return (
@@ -43,6 +48,7 @@ export function TodoCard({ todo }: Readonly<Props>) {
             variant="ghost"
             size="icon"
             className="rounded-full text-destructive hover:bg-destructive/20"
+            onClick={handleDelete}
           >
             <Trash2 />
           </Button>
