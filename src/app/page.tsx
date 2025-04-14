@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { toast } from "sonner"
-import { Todo } from "@/lib/types"
+import { Todo } from "@/db/schema"
 import { TodoList } from "@/components/todo-list"
 import { TodoFormDialog } from "@/components/todo-form-dialog"
 import { TodoCardSkeleton } from "@/components/todo-card-skeleton"

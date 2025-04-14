@@ -1,4 +1,4 @@
-import { Todo } from "../lib/types"
+import { Todo } from "@/db/schema"
 import { TodoCard } from "./todo-card"
 
 type Props = {

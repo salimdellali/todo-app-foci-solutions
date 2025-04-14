@@ -1,7 +1,8 @@
 "use server"
 
 import { v4 as uuidv4 } from "uuid"
-import { Todo } from "@/lib/types"
+import { db } from "@/db"
+import { todos, Todo } from "@/db/schema"
 
 type GetAllTodosResponse =
   | {
@@ -13,7 +14,7 @@ type GetAllTodosResponse =
       error: string
     }
 
-const TODOS: Todo[] = [
+const _TODOS: Todo[] = [
   {
     id: uuidv4(),
     title: "Complete FOCI Solutions project",
@@ -36,7 +37,8 @@ const TODOS: Todo[] = [
 
 export default async function getAllTodos(): Promise<GetAllTodosResponse> {
   try {
-    return { todos: TODOS, error: null }
+    const allTodos = await db.select().from(todos)
+    return { todos: allTodos, error: null }
   } catch (error) {
     console.error("Failed to get all todos:", error)
     return { todos: null, error: "Failed to fetch todos" }

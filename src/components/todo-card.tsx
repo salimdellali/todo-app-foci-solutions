@@ -1,7 +1,7 @@
 "use client"
 
 import { formatDistanceToNow } from "date-fns"
-import { Todo } from "@/lib/types"
+import { Todo } from "@/db/schema"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
