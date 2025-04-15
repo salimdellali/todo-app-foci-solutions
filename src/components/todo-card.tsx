@@ -1,7 +1,7 @@
 "use client"
 
 import { formatDistanceToNow } from "date-fns"
-import { Todo } from "@/db/schema"
+import { Todo, TodoInput } from "@/db/schema"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -13,8 +13,8 @@ import {
   RefreshCw,
   Trash2,
 } from "lucide-react"
-import { Badge } from "./ui/badge"
-import { Button } from "./ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,14 +26,19 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { TodoFormDialog } from "@/components/todo-form-dialog"
 
 type Props = {
   todo: Todo
   onDelete: (todo: Todo) => void
+  onUpdate: (todo: Todo, todoInput: TodoInput) => void
 }
 
-// Internal Delete Dialog Component
-function TodoDeleteDialogTrigger({ todo, onDelete }: Readonly<Props>) {
+// internal delete todo dialog trigger
+function TodoDeleteDialogTrigger({
+  todo,
+  onDelete,
+}: Readonly<Pick<Props, "todo" | "onDelete">>) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -66,7 +71,7 @@ function TodoDeleteDialogTrigger({ todo, onDelete }: Readonly<Props>) {
   )
 }
 
-export function TodoCard({ todo, onDelete }: Readonly<Props>) {
+export function TodoCard({ todo, onDelete, onUpdate }: Readonly<Props>) {
   const getDistanceToNow = (date: Date) => {
     return formatDistanceToNow(date, { addSuffix: true })
   }
@@ -82,9 +87,16 @@ export function TodoCard({ todo, onDelete }: Readonly<Props>) {
 
         {/* actions */}
         <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-          <Button variant="ghost" size="icon" className="rounded-full">
-            <Pencil />
-          </Button>
+          <TodoFormDialog
+            mode="update"
+            todo={todo}
+            onSubmit={(todoInput) => onUpdate(todo, todoInput)}
+            trigger={
+              <Button variant="ghost" size="icon" className="rounded-full">
+                <Pencil />
+              </Button>
+            }
+          />
           <TodoDeleteDialogTrigger todo={todo} onDelete={onDelete} />
         </div>
       </CardHeader>

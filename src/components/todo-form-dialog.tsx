@@ -1,9 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { addDays, format } from "date-fns"
-import { CalendarIcon, Plus } from "lucide-react"
+import { CalendarIcon } from "lucide-react"
 import { toast } from "sonner"
+import { Todo, TodoInput } from "@/db/schema"
 import {
   Dialog,
   DialogContent,
@@ -14,12 +15,12 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { Button } from "@/components/ui/button"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { Button } from "@/components/ui/button"
 import {
   Select,
   SelectContent,
@@ -28,24 +29,41 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Calendar } from "@/components/ui/calendar"
-import { TodoInput } from "@/db/schema"
 
 type Props = {
+  mode: "create" | "update"
+  todo?: Todo
+  trigger: React.ReactNode
   onSubmit: (todoInput: TodoInput) => void
 }
 
-export function TodoFormDialog({ onSubmit }: Readonly<Props>) {
+export function TodoFormDialog({
+  mode,
+  todo,
+  trigger,
+  onSubmit,
+}: Readonly<Props>) {
   const [open, setOpen] = useState(false)
+
   const [title, setTitle] = useState<string>("")
   const [description, setDescription] = useState<string>("")
-  const [dueDate, setDueDate] = useState<Date>()
+  const [dueDate, setDueDate] = useState<Date | undefined>(undefined)
+
+  // Reset form when todo changes (for update mode)
+  useEffect(() => {
+    if (todo) {
+      setTitle(todo.title)
+      setDescription(todo.description ?? "")
+      setDueDate(todo.dueDate)
+    }
+  }, [todo])
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     // TODO: improve validation
     // validate inputs
-    if (!title.trim) {
+    if (!title.trim()) {
       toast("Please enter a title")
       return
     }
@@ -56,33 +74,29 @@ export function TodoFormDialog({ onSubmit }: Readonly<Props>) {
     }
     // inputs validated
 
-    // call add todo server action
+    // the right server action will be called, either add new or update existing
     onSubmit({
-      title,
-      description,
+      title: title.trim(),
+      description: description.trim(),
       dueDate,
     })
 
-    // reset fields
+    // reset fields after form submission
     setTitle("")
     setDescription("")
     setDueDate(undefined)
 
-    // Close dialog after submission
     setOpen(false)
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="hover:shadow-lg transition-all duration-300">
-          <Plus />
-          <span>Add Todo</span>
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add New Todo</DialogTitle>
+          <DialogTitle>
+            {mode === "create" ? "Add New Todo" : "Edit Todo"}
+          </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="space-y-4">
@@ -91,6 +105,7 @@ export function TodoFormDialog({ onSubmit }: Readonly<Props>) {
               <Label htmlFor="title">Title</Label>
               <Input
                 id="title"
+                value={title}
                 placeholder="Enter title"
                 required
                 onChange={(e) => setTitle(e.target.value)}
@@ -102,6 +117,7 @@ export function TodoFormDialog({ onSubmit }: Readonly<Props>) {
               <Label htmlFor="description">Description</Label>
               <Textarea
                 id="description"
+                value={description}
                 placeholder="Enter description"
                 onChange={(e) => setDescription(e.target.value)}
               />
@@ -148,7 +164,7 @@ export function TodoFormDialog({ onSubmit }: Readonly<Props>) {
             </div>
 
             <Button type="submit" className="w-full">
-              Add Todo
+              {mode === "create" ? "Add Todo" : "Update Todo"}
             </Button>
           </div>
         </form>

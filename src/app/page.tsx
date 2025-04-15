@@ -6,7 +6,14 @@ import { Todo, TodoInput } from "@/db/schema"
 import { TodoList } from "@/components/todo-list"
 import { TodoFormDialog } from "@/components/todo-form-dialog"
 import { TodoCardSkeleton } from "@/components/todo-card-skeleton"
-import { getAllTodos, createTodo, deleteTodo } from "@/actions/todos"
+import {
+  getAllTodos,
+  createTodo,
+  deleteTodo,
+  updateTodo,
+} from "@/actions/todos"
+import { Button } from "../components/ui/button"
+import { Plus } from "lucide-react"
 
 export default function RootPage() {
   const [todos, setTodos] = useState<Todo[]>([])
@@ -79,20 +86,61 @@ export default function RootPage() {
     )
   }
 
+  async function handleUpdateTodo(todo: Todo, todoInput: TodoInput) {
+    toast.promise(
+      async () => {
+        const { todo: updatedTodo, errorMessage } = await updateTodo(
+          todo.id,
+          todoInput
+        )
+        if (errorMessage) {
+          throw new Error(errorMessage)
+        }
+        if (updatedTodo) {
+          setTodos((prevTodos) =>
+            prevTodos.map((prevTodo) =>
+              prevTodo.id === updatedTodo.id ? updatedTodo : prevTodo
+            )
+          )
+          return updatedTodo
+        }
+      },
+      {
+        loading: "Updating todo...",
+        error: (error) => error.message,
+        success: (updatedTodo) =>
+          `Todo "${updatedTodo!.title}" has been updated`,
+      }
+    )
+  }
+
   return (
     <main className="min-h-screen bg-gray-100">
       <div className="max-w-4xl mx-auto px-4">
         {/* hero section */}
         <div className="flex justify-between py-4">
           <h1 className="text-3xl font-bold">Todo App</h1>
-          <TodoFormDialog onSubmit={handleAddTodo} />
+          <TodoFormDialog
+            mode="create"
+            onSubmit={handleAddTodo}
+            trigger={
+              <Button className="hover:shadow-lg transition-all duration-300">
+                <Plus />
+                <span>Add Todo</span>
+              </Button>
+            }
+          />
         </div>
 
         {/* todo list */}
         {isLoading ? (
           <TodoCardSkeleton />
         ) : (
-          <TodoList todos={todos} onDeleteTodo={handleDeleteTodo} />
+          <TodoList
+            todos={todos}
+            onDeleteTodo={handleDeleteTodo}
+            onUpdateTodo={handleUpdateTodo}
+          />
         )}
       </div>
     </main>

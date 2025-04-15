@@ -1,12 +1,17 @@
-import { Todo } from "@/db/schema"
+import { Todo, TodoInput } from "@/db/schema"
 import { TodoCard } from "./todo-card"
 
 type Props = {
   todos: Todo[]
   onDeleteTodo: (todo: Todo) => void
+  onUpdateTodo: (todo: Todo, todoInput: TodoInput) => void
 }
 
-export function TodoList({ todos, onDeleteTodo }: Readonly<Props>) {
+export function TodoList({
+  todos,
+  onDeleteTodo,
+  onUpdateTodo,
+}: Readonly<Props>) {
   if (!todos.length) {
     return (
       <div className="flex flex-col border border-dashed rounded-2xl h-60 items-center justify-center bg-white text-gray-500">
@@ -18,7 +23,12 @@ export function TodoList({ todos, onDeleteTodo }: Readonly<Props>) {
   return (
     <div className="space-y-4">
       {todos.map((todo) => (
-        <TodoCard key={todo.id} todo={todo} onDelete={onDeleteTodo} />
+        <TodoCard
+          key={todo.id}
+          todo={todo}
+          onDelete={onDeleteTodo}
+          onUpdate={onUpdateTodo}
+        />
       ))}
     </div>
   )
