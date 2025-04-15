@@ -15,10 +15,62 @@ import {
 } from "@/actions/todos"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
+import { TodoFilter } from "@/components/todo-organizer"
+import { differenceInSeconds } from "date-fns"
+
+export type TodoStatus = "Completed" | "In Progress" | "Due Soon" | "Overdue"
+export type FilterOption = "All Tasks" | TodoStatus
+export type SortOption = "Created At" | "Updated At" | "Due Date" | "Title"
 
 export default function RootPage() {
   const [todos, setTodos] = useState<Todo[]>([])
   const [isLoading, setIsLoading] = useState(true)
+
+  const [sortBy, setSortBy] = useState<SortOption>("Created At")
+  const [filterBy, setFilterBy] = useState<FilterOption>("All Tasks")
+
+  function filteredTodos(todos: Todo[], filterBy: FilterOption): Todo[] {
+    return todos.filter((todo) => {
+      if (filterBy === "All Tasks") return true
+      if (filterBy === "Completed") return !!todo.completedAt
+
+      const secondsToDue = differenceInSeconds(todo.dueDate, new Date())
+      const SECONDS_IN_DAY = 86400
+
+      if (filterBy === "In Progress") {
+        return !todo.completedAt && secondsToDue > SECONDS_IN_DAY
+      }
+      if (filterBy === "Overdue") {
+        return !todo.completedAt && secondsToDue < 0
+      }
+      if (filterBy === "Due Soon") {
+        return (
+          !todo.completedAt &&
+          secondsToDue >= 0 &&
+          secondsToDue <= SECONDS_IN_DAY
+        )
+      }
+      return true
+    })
+  }
+
+  function sortedTodos(todos: Todo[], sortBy: SortOption): Todo[] {
+    return todos.sort((a, b) => {
+      if (sortBy === "Created At")
+        return b.createdAt.getTime() - a.createdAt.getTime()
+      if (sortBy === "Updated At")
+        return b.updatedAt.getTime() - a.updatedAt.getTime()
+      if (sortBy === "Due Date")
+        return a.dueDate.getTime() - b.dueDate.getTime()
+      if (sortBy === "Title") return a.title.localeCompare(b.title)
+      return 0
+    })
+  }
+
+  const todosToDisplay: Todo[] = sortedTodos(
+    filteredTodos(todos, filterBy),
+    sortBy
+  )
 
   useEffect(() => {
     async function fetchTodos() {
@@ -160,12 +212,22 @@ export default function RootPage() {
           />
         </div>
 
+        {/* todo filter and sort */}
+        <div className="py-4">
+          <TodoFilter
+            sortBy={sortBy}
+            filterBy={filterBy}
+            onSortChange={setSortBy}
+            onFilterChange={setFilterBy}
+          />
+        </div>
+
         {/* todo list */}
         {isLoading ? (
           <TodoCardSkeleton />
         ) : (
           <TodoList
-            todos={todos}
+            todos={todosToDisplay}
             onDeleteTodo={handleDeleteTodo}
             onUpdateTodo={handleUpdateTodo}
             onToggleCompletedAtTodo={handleToggleCompletedAtTodo}

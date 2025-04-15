@@ -3,7 +3,6 @@
 import {
   formatDistanceToNow,
   formatRelative,
-  differenceInDays,
   differenceInSeconds,
 } from "date-fns"
 import { Todo, TodoInput } from "@/db/schema"
@@ -104,11 +103,13 @@ export function TodoCard({
       return TodoStatusEnum.COMPLETED
     }
 
-    const daysToDueDate = differenceInDays(todo.dueDate, new Date())
-    if (daysToDueDate < 0) {
+    const secondsToDue = differenceInSeconds(todo.dueDate, new Date())
+    const SECONDS_IN_DAY = 86400
+
+    if (secondsToDue < 0) {
       return TodoStatusEnum.OVERDUE
     }
-    if (daysToDueDate <= 1) {
+    if (secondsToDue <= SECONDS_IN_DAY) {
       return TodoStatusEnum.DUE_SOON
     }
 
