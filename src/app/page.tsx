@@ -11,8 +11,9 @@ import {
   createTodo,
   deleteTodo,
   updateTodo,
+  toggleCompletedAtTodo,
 } from "@/actions/todos"
-import { Button } from "../components/ui/button"
+import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 
 export default function RootPage() {
@@ -114,6 +115,33 @@ export default function RootPage() {
     )
   }
 
+  async function handleToggleCompletedAtTodo(todo: Todo) {
+    toast.promise(
+      async () => {
+        const { todo: updatedTodo, errorMessage } = await toggleCompletedAtTodo(
+          todo
+        )
+        if (errorMessage) {
+          throw new Error(errorMessage)
+        }
+        if (updatedTodo) {
+          setTodos((prevTodos) =>
+            prevTodos.map((prevTodo) =>
+              prevTodo.id === updatedTodo.id ? updatedTodo : prevTodo
+            )
+          )
+          return updatedTodo
+        }
+      },
+      {
+        loading: "Toggling completion...",
+        error: (error) => error.message,
+        success: (updatedTodo) =>
+          `Todo completion of "${updatedTodo!.title}" has been toggled`,
+      }
+    )
+  }
+
   return (
     <main className="min-h-screen bg-gray-100">
       <div className="max-w-4xl mx-auto px-4">
@@ -140,6 +168,7 @@ export default function RootPage() {
             todos={todos}
             onDeleteTodo={handleDeleteTodo}
             onUpdateTodo={handleUpdateTodo}
+            onToggleCompletedAtTodo={handleToggleCompletedAtTodo}
           />
         )}
       </div>

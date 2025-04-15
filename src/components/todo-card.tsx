@@ -32,6 +32,7 @@ type Props = {
   todo: Todo
   onDelete: (todo: Todo) => void
   onUpdate: (todo: Todo, todoInput: TodoInput) => void
+  onToggleCompletedAt: (todo: Todo) => void
 }
 
 // internal delete todo dialog trigger
@@ -71,7 +72,12 @@ function TodoDeleteDialogTrigger({
   )
 }
 
-export function TodoCard({ todo, onDelete, onUpdate }: Readonly<Props>) {
+export function TodoCard({
+  todo,
+  onDelete,
+  onUpdate,
+  onToggleCompletedAt,
+}: Readonly<Props>) {
   const getDistanceToNow = (date: Date) => {
     return formatDistanceToNow(date, { addSuffix: true })
   }
@@ -81,7 +87,11 @@ export function TodoCard({ todo, onDelete, onUpdate }: Readonly<Props>) {
       <CardHeader className="flex justify-between gap-3 ">
         {/* checkbox and title */}
         <div className="flex gap-3 items-center">
-          <Checkbox className="rounded-full border-2" />
+          <Checkbox
+            className="rounded-full border-2"
+            checked={!!todo.completedAt}
+            onCheckedChange={() => onToggleCompletedAt(todo)}
+          />
           <h3 className="font-medium text-lg">{todo.title}</h3>
         </div>
 

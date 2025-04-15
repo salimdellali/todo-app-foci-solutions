@@ -5,12 +5,14 @@ type Props = {
   todos: Todo[]
   onDeleteTodo: (todo: Todo) => void
   onUpdateTodo: (todo: Todo, todoInput: TodoInput) => void
+  onToggleCompletedAtTodo: (todo: Todo) => void
 }
 
 export function TodoList({
   todos,
   onDeleteTodo,
   onUpdateTodo,
+  onToggleCompletedAtTodo,
 }: Readonly<Props>) {
   if (!todos.length) {
     return (
@@ -28,6 +30,7 @@ export function TodoList({
           todo={todo}
           onDelete={onDeleteTodo}
           onUpdate={onUpdateTodo}
+          onToggleCompletedAt={onToggleCompletedAtTodo}
         />
       ))}
     </div>
