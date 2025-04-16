@@ -158,45 +158,59 @@ export default function RootPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-100">
-      <div className="max-w-4xl mx-auto px-4">
-        {/* hero section */}
-        <div className="flex justify-between py-4">
-          <h1 className="text-3xl font-bold">Todo App</h1>
-          <TodoFormDialog
-            mode="create"
-            onSubmit={handleAddTodo}
-            trigger={
-              <Button className="hover:shadow-lg transition-all duration-300">
-                <Plus />
-                <span>Add Todo</span>
-              </Button>
-            }
-          />
-        </div>
-
-        {/* todo filter and sort */}
-        <div className="py-4">
-          <TodoFilter
-            sortBy={sortBy}
-            filterBy={filterBy}
-            onSortChange={setSortBy}
-            onFilterChange={setFilterBy}
-          />
-        </div>
-
-        {/* todo list */}
-        {isLoading ? (
-          <TodoCardSkeleton />
-        ) : (
-          <TodoList
-            todos={todosToDisplay}
-            onDeleteTodo={handleDeleteTodo}
-            onUpdateTodo={handleUpdateTodo}
-            onToggleCompletedAtTodo={handleToggleCompletedAtTodo}
-          />
-        )}
+    <>
+      <div className="w-full px-4 py-2 text-sm text-center border">
+        🚀 View the code on{" "}
+        <a
+          href="https://github.com/salimdellali/todo-app-foci-solutions"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline underline-offset-4"
+        >
+          GitHub
+        </a>
       </div>
-    </main>
+
+      <main className="min-h-screen bg-gray-100">
+        <div className="max-w-4xl mx-auto px-4">
+          {/* hero section */}
+          <div className="flex justify-between py-4">
+            <h1 className="text-3xl font-bold">Todo App</h1>
+            <TodoFormDialog
+              mode="create"
+              onSubmit={handleAddTodo}
+              trigger={
+                <Button className="hover:shadow-lg transition-all duration-300">
+                  <Plus />
+                  <span>Add Todo</span>
+                </Button>
+              }
+            />
+          </div>
+
+          {/* todo filter and sort */}
+          <div className="py-4">
+            <TodoFilter
+              sortBy={sortBy}
+              filterBy={filterBy}
+              onSortChange={setSortBy}
+              onFilterChange={setFilterBy}
+            />
+          </div>
+
+          {/* todo list */}
+          {isLoading ? (
+            <TodoCardSkeleton />
+          ) : (
+            <TodoList
+              todos={todosToDisplay}
+              onDeleteTodo={handleDeleteTodo}
+              onUpdateTodo={handleUpdateTodo}
+              onToggleCompletedAtTodo={handleToggleCompletedAtTodo}
+            />
+          )}
+        </div>
+      </main>
+    </>
   )
 }
