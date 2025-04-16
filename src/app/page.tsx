@@ -17,33 +17,37 @@ import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import { TodoFilter } from "@/components/todo-organizer"
 import { differenceInSeconds } from "date-fns"
-
-export type TodoStatus = "Completed" | "In Progress" | "Due Soon" | "Overdue"
-export type FilterOption = "All Tasks" | TodoStatus
-export type SortOption = "Created At" | "Updated At" | "Due Date" | "Title"
+import {
+  FilterOptions,
+  SortOptions,
+  FILTER_OPTIONS,
+  SORT_OPTIONS,
+  SECONDS_IN_DAY,
+} from "@/lib/utils"
 
 export default function RootPage() {
   const [todos, setTodos] = useState<Todo[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
-  const [sortBy, setSortBy] = useState<SortOption>("Created At")
-  const [filterBy, setFilterBy] = useState<FilterOption>("All Tasks")
+  const [sortBy, setSortBy] = useState<SortOptions>(SORT_OPTIONS.LAST_CREATED)
+  const [filterBy, setFilterBy] = useState<FilterOptions>(
+    FILTER_OPTIONS.ALL_TASKS
+  )
 
-  function filteredTodos(todos: Todo[], filterBy: FilterOption): Todo[] {
+  function filteredTodos(todos: Todo[], filterBy: FilterOptions): Todo[] {
     return todos.filter((todo) => {
-      if (filterBy === "All Tasks") return true
-      if (filterBy === "Completed") return !!todo.completedAt
+      if (filterBy === FILTER_OPTIONS.ALL_TASKS) return true
+      if (filterBy === FILTER_OPTIONS.COMPLETED) return !!todo.completedAt
 
       const secondsToDue = differenceInSeconds(todo.dueDate, new Date())
-      const SECONDS_IN_DAY = 86400
 
-      if (filterBy === "In Progress") {
+      if (filterBy === FILTER_OPTIONS.IN_PROGRESS) {
         return !todo.completedAt && secondsToDue > SECONDS_IN_DAY
       }
-      if (filterBy === "Overdue") {
+      if (filterBy === FILTER_OPTIONS.OVERDUE) {
         return !todo.completedAt && secondsToDue < 0
       }
-      if (filterBy === "Due Soon") {
+      if (filterBy === FILTER_OPTIONS.DUE_SOON) {
         return (
           !todo.completedAt &&
           secondsToDue >= 0 &&
@@ -54,15 +58,15 @@ export default function RootPage() {
     })
   }
 
-  function sortedTodos(todos: Todo[], sortBy: SortOption): Todo[] {
+  function sortedTodos(todos: Todo[], sortBy: SortOptions): Todo[] {
     return todos.sort((a, b) => {
-      if (sortBy === "Created At")
-        return b.createdAt.getTime() - a.createdAt.getTime()
-      if (sortBy === "Updated At")
-        return b.updatedAt.getTime() - a.updatedAt.getTime()
-      if (sortBy === "Due Date")
-        return a.dueDate.getTime() - b.dueDate.getTime()
-      if (sortBy === "Title") return a.title.localeCompare(b.title)
+      if (sortBy === SORT_OPTIONS.LAST_CREATED)
+        return b.createdAt.getTime() - a.createdAt.getTime() // last created comes first
+      if (sortBy === SORT_OPTIONS.LAST_UPDATED)
+        return b.updatedAt.getTime() - a.updatedAt.getTime() // last updated comes first
+      if (sortBy === SORT_OPTIONS.DUE_DATE)
+        return a.dueDate.getTime() - b.dueDate.getTime() // closest due date comes first
+      if (sortBy === SORT_OPTIONS.TITLE) return a.title.localeCompare(b.title) // alphabetical order
       return 0
     })
   }

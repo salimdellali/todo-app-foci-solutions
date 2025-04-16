@@ -8,13 +8,18 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
-import { FilterOption, SortOption } from "@/app/page"
+import {
+  FilterOptions,
+  SortOptions,
+  FILTER_OPTIONS,
+  SORT_OPTIONS,
+} from "@/lib/utils"
 
 type TodoFilterProps = {
-  sortBy: SortOption
-  filterBy: FilterOption
-  onSortChange: (value: SortOption) => void
-  onFilterChange: (value: FilterOption) => void
+  sortBy: SortOptions
+  filterBy: FilterOptions
+  onSortChange: (value: SortOptions) => void
+  onFilterChange: (value: FilterOptions) => void
 }
 
 export function TodoFilter({
@@ -30,23 +35,19 @@ export function TodoFilter({
           Filter
         </Label>
         <Select
-          defaultValue="all"
+          defaultValue={FILTER_OPTIONS.ALL_TASKS}
           value={filterBy}
-          onValueChange={(value) => onFilterChange(value as FilterOption)}
+          onValueChange={(value) => onFilterChange(value as FilterOptions)}
         >
-          <SelectTrigger
-            defaultValue="all"
-            id="filter"
-            className="w-full bg-white dark:bg-dark"
-          >
+          <SelectTrigger id="filter" className="w-full bg-white dark:bg-dark">
             <SelectValue placeholder="Filter tasks" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="All Tasks">All Tasks</SelectItem>
-            <SelectItem value="In Progress">In Progress</SelectItem>
-            <SelectItem value="Completed">Completed</SelectItem>
-            <SelectItem value="Overdue">Overdue</SelectItem>
-            <SelectItem value="Due Soon">Due Soon</SelectItem>
+            {Object.values(FILTER_OPTIONS).map((filterOption) => (
+              <SelectItem key={filterOption} value={filterOption}>
+                {filterOption}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
@@ -56,18 +57,19 @@ export function TodoFilter({
           Sort By
         </Label>
         <Select
-          defaultValue="createdAt"
+          defaultValue={SORT_OPTIONS.LAST_CREATED}
           value={sortBy}
-          onValueChange={(value) => onSortChange(value as SortOption)}
+          onValueChange={(value) => onSortChange(value as SortOptions)}
         >
           <SelectTrigger id="sort" className="w-full bg-white dark:bg-dark">
             <SelectValue placeholder="Sort tasks" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="Created At">Last Created</SelectItem>
-            <SelectItem value="Updated At">Last Updated</SelectItem>
-            <SelectItem value="Due Date">Due Date</SelectItem>
-            <SelectItem value="Title">Title</SelectItem>
+            {Object.values(SORT_OPTIONS).map((sortOption) => (
+              <SelectItem key={sortOption} value={sortOption}>
+                {sortOption}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>

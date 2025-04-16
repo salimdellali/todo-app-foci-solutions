@@ -31,7 +31,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { TodoFormDialog } from "@/components/todo-form-dialog"
-import { cn } from "@/lib/utils"
+import { cn, TODO_STATUSES, TodoStatuses, SECONDS_IN_DAY } from "@/lib/utils"
 
 type Props = {
   todo: Todo
@@ -91,45 +91,22 @@ export function TodoCard({
     return formatRelative(date, new Date())
   }
 
-  enum TodoStatusEnum {
-    COMPLETED = "Completed",
-    IN_PROGRESS = "In Progress",
-    DUE_SOON = "Due Soon",
-    OVERDUE = "Overdue",
-  }
-
-  const getTodoStatus = (todo: Todo): TodoStatusEnum => {
-    if (todo.completedAt) {
-      return TodoStatusEnum.COMPLETED
-    }
-
+  const getStatusFromTodo = (todo: Todo): TodoStatuses => {
+    if (todo.completedAt) return TODO_STATUSES.COMPLETED
     const secondsToDue = differenceInSeconds(todo.dueDate, new Date())
-    const SECONDS_IN_DAY = 86400
-
-    if (secondsToDue < 0) {
-      return TodoStatusEnum.OVERDUE
-    }
-    if (secondsToDue <= SECONDS_IN_DAY) {
-      return TodoStatusEnum.DUE_SOON
-    }
-
-    return TodoStatusEnum.IN_PROGRESS
+    if (secondsToDue < 0) return TODO_STATUSES.OVERDUE
+    if (secondsToDue <= SECONDS_IN_DAY) return TODO_STATUSES.DUE_SOON
+    return TODO_STATUSES.IN_PROGRESS
   }
 
-  const getStatusColor = (status: TodoStatusEnum) => {
-    switch (status) {
-      case TodoStatusEnum.COMPLETED:
-        return "bg-emerald-400"
-      case TodoStatusEnum.OVERDUE:
-        return "bg-red-400"
-      case TodoStatusEnum.DUE_SOON:
-        return "bg-orange-400"
-      default:
-        return "bg-primary"
-    }
+  const getColorClassByStatus = (status: TodoStatuses) => {
+    if (status === TODO_STATUSES.COMPLETED) return "bg-emerald-400"
+    if (status === TODO_STATUSES.OVERDUE) return "bg-red-400"
+    if (status === TODO_STATUSES.DUE_SOON) return "bg-orange-400"
+    return "bg-primary"
   }
 
-  const todoStatus = getTodoStatus(todo)
+  const todoStatus = getStatusFromTodo(todo)
 
   return (
     <Card
@@ -138,11 +115,11 @@ export function TodoCard({
         todo.completedAt && "bg-muted text-muted-foreground"
       )}
     >
-      {/* Priority indicator line */}
+      {/* priority indicator line */}
       <div
         className={cn(
           "absolute left-0 top-0 bottom-0 w-1",
-          getStatusColor(todoStatus)
+          getColorClassByStatus(todoStatus)
         )}
       />
 
@@ -182,7 +159,9 @@ export function TodoCard({
 
       <CardContent className="space-y-2">
         {/* status */}
-        <Badge className={getStatusColor(todoStatus)}>{todoStatus}</Badge>
+        <Badge className={getColorClassByStatus(todoStatus)}>
+          {todoStatus}
+        </Badge>
 
         {/* description */}
         <p>{todo.description}</p>
