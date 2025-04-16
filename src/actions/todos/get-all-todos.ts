@@ -1,7 +1,7 @@
 "use server"
 
-import { db } from "@/db"
 import { desc } from "drizzle-orm"
+import { db } from "@/db"
 import { todosTable, Todo } from "@/db/schema"
 
 type GetAllTodosResult = {

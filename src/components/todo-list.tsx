@@ -1,5 +1,5 @@
 import { Todo, TodoInput } from "@/db/schema"
-import { TodoCard } from "./todo-card"
+import { TodoCard } from "@/components/todo-card"
 
 type Props = {
   todos: Todo[]

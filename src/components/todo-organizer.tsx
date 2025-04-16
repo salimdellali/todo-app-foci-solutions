@@ -1,5 +1,3 @@
-"use client"
-
 import {
   Select,
   SelectContent,
@@ -15,7 +13,7 @@ import {
   SORT_OPTIONS,
 } from "@/lib/utils"
 
-type TodoFilterProps = {
+type Props = {
   sortBy: SortOptions
   filterBy: FilterOptions
   onSortChange: (value: SortOptions) => void
@@ -27,7 +25,7 @@ export function TodoFilter({
   filterBy,
   onSortChange,
   onFilterChange,
-}: TodoFilterProps) {
+}: Readonly<Props>) {
   return (
     <div className="flex flex-col gap-4 sm:flex-row">
       <div className="space-y-1 w-full">

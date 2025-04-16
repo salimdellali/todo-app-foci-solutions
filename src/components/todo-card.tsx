@@ -1,13 +1,8 @@
-"use client"
-
 import {
   formatDistanceToNow,
   formatRelative,
   differenceInSeconds,
 } from "date-fns"
-import { Todo, TodoInput } from "@/db/schema"
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
-import { Checkbox } from "@/components/ui/checkbox"
 import {
   Calendar,
   CircleCheckBig,
@@ -17,6 +12,9 @@ import {
   RefreshCw,
   Trash2,
 } from "lucide-react"
+import { Todo, TodoInput } from "@/db/schema"
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {

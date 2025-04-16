@@ -1,8 +1,8 @@
 "use server"
 
+import { eq } from "drizzle-orm"
 import { db } from "@/db"
 import { Todo, TodoInput, todosTable } from "@/db/schema"
-import { eq } from "drizzle-orm"
 
 type UpdateTodoResult = {
   todo?: Todo

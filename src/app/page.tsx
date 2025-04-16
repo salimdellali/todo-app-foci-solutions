@@ -2,10 +2,14 @@
 
 import { useState, useEffect } from "react"
 import { toast } from "sonner"
+import { differenceInSeconds } from "date-fns"
+import { Plus } from "lucide-react"
 import { Todo, TodoInput } from "@/db/schema"
+import { Button } from "@/components/ui/button"
 import { TodoList } from "@/components/todo-list"
 import { TodoFormDialog } from "@/components/todo-form-dialog"
 import { TodoCardSkeleton } from "@/components/todo-card-skeleton"
+import { TodoFilter } from "@/components/todo-organizer"
 import {
   getAllTodos,
   createTodo,
@@ -13,10 +17,6 @@ import {
   updateTodo,
   toggleCompletedAtTodo,
 } from "@/actions/todos"
-import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
-import { TodoFilter } from "@/components/todo-organizer"
-import { differenceInSeconds } from "date-fns"
 import {
   FilterOptions,
   SortOptions,
