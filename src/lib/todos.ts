@@ -26,6 +26,21 @@ export const SORT_OPTIONS = {
 
 export type SortOptions = (typeof SORT_OPTIONS)[keyof typeof SORT_OPTIONS]
 
+export const getStatusFromTodo = (todo: Todo): TodoStatuses => {
+  if (todo.completedAt) return TODO_STATUSES.COMPLETED
+  const secondsToDue = getDifferenceInSecondsToNow(todo.dueDate)
+  if (secondsToDue < 0) return TODO_STATUSES.OVERDUE
+  if (secondsToDue <= SECONDS_IN_DAY) return TODO_STATUSES.DUE_SOON
+  return TODO_STATUSES.IN_PROGRESS
+}
+
+export const getColorClassByStatus = (status: TodoStatuses) => {
+  if (status === TODO_STATUSES.COMPLETED) return "bg-emerald-400"
+  if (status === TODO_STATUSES.OVERDUE) return "bg-red-400"
+  if (status === TODO_STATUSES.DUE_SOON) return "bg-orange-400"
+  return "bg-primary"
+}
+
 export function filterTodos(todos: Todo[], filterBy: FilterOptions): Todo[] {
   return todos.filter((todo) => {
     if (filterBy === FILTER_OPTIONS.ALL_TASKS) return true

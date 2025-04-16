@@ -29,9 +29,8 @@ import {
   formatToDistanceToNow,
   formatToRelativeToNow,
   getDifferenceInSecondsToNow,
-  SECONDS_IN_DAY,
 } from "@/lib/dates"
-import { TODO_STATUSES, TodoStatuses } from "@/lib/todos"
+import { getColorClassByStatus, getStatusFromTodo } from "@/lib/todos"
 
 type Props = {
   todo: Todo
@@ -40,64 +39,12 @@ type Props = {
   onToggleCompletedAt: (todo: Todo) => void
 }
 
-// internal delete todo dialog trigger
-function TodoDeleteDialogTrigger({
-  todo,
-  onDelete,
-}: Readonly<Pick<Props, "todo" | "onDelete">>) {
-  return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="rounded-full text-destructive hover:bg-destructive/20"
-        >
-          <Trash2 />
-        </Button>
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>You are about to delete a Todo</AlertDialogTitle>
-          <AlertDialogDescription>
-            Are you sure you want to delete &quot;{todo.title}&quot; ?
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            onClick={() => onDelete(todo)}
-            className="bg-destructive/80 hover:bg-destructive"
-          >
-            Delete
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  )
-}
-
 export function TodoCard({
   todo,
   onDelete,
   onUpdate,
   onToggleCompletedAt,
 }: Readonly<Props>) {
-  const getStatusFromTodo = (todo: Todo): TodoStatuses => {
-    if (todo.completedAt) return TODO_STATUSES.COMPLETED
-    const secondsToDue = getDifferenceInSecondsToNow(todo.dueDate)
-    if (secondsToDue < 0) return TODO_STATUSES.OVERDUE
-    if (secondsToDue <= SECONDS_IN_DAY) return TODO_STATUSES.DUE_SOON
-    return TODO_STATUSES.IN_PROGRESS
-  }
-
-  const getColorClassByStatus = (status: TodoStatuses) => {
-    if (status === TODO_STATUSES.COMPLETED) return "bg-emerald-400"
-    if (status === TODO_STATUSES.OVERDUE) return "bg-red-400"
-    if (status === TODO_STATUSES.DUE_SOON) return "bg-orange-400"
-    return "bg-primary"
-  }
-
   const todoStatus = getStatusFromTodo(todo)
 
   return (
@@ -210,5 +157,42 @@ export function TodoCard({
         </div>
       </CardFooter>
     </Card>
+  )
+}
+
+// internal delete todo dialog trigger
+function TodoDeleteDialogTrigger({
+  todo,
+  onDelete,
+}: Readonly<Pick<Props, "todo" | "onDelete">>) {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="rounded-full text-destructive hover:bg-destructive/20"
+        >
+          <Trash2 />
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>You are about to delete a Todo</AlertDialogTitle>
+          <AlertDialogDescription>
+            Are you sure you want to delete &quot;{todo.title}&quot; ?
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={() => onDelete(todo)}
+            className="bg-destructive/80 hover:bg-destructive"
+          >
+            Delete
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   )
 }
