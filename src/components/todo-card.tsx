@@ -1,9 +1,4 @@
 import {
-  formatDistanceToNow,
-  formatRelative,
-  differenceInSeconds,
-} from "date-fns"
-import {
   Calendar,
   CircleCheckBig,
   CircleX,
@@ -29,7 +24,14 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { TodoFormDialog } from "@/components/todo-form-dialog"
-import { cn, TODO_STATUSES, TodoStatuses, SECONDS_IN_DAY } from "@/lib/utils"
+import { cn } from "@/lib/utils"
+import {
+  formatToDistanceToNow,
+  formatToRelativeToNow,
+  getDifferenceInSecondsToNow,
+  SECONDS_IN_DAY,
+} from "@/lib/dates"
+import { TODO_STATUSES, TodoStatuses } from "@/lib/todos"
 
 type Props = {
   todo: Todo
@@ -81,17 +83,9 @@ export function TodoCard({
   onUpdate,
   onToggleCompletedAt,
 }: Readonly<Props>) {
-  const getDistanceToNow = (date: Date): string => {
-    return formatDistanceToNow(date, { addSuffix: true })
-  }
-
-  const formatCompletedAt = (date: Date): string => {
-    return formatRelative(date, new Date())
-  }
-
   const getStatusFromTodo = (todo: Todo): TodoStatuses => {
     if (todo.completedAt) return TODO_STATUSES.COMPLETED
-    const secondsToDue = differenceInSeconds(todo.dueDate, new Date())
+    const secondsToDue = getDifferenceInSecondsToNow(todo.dueDate)
     if (secondsToDue < 0) return TODO_STATUSES.OVERDUE
     if (secondsToDue <= SECONDS_IN_DAY) return TODO_STATUSES.DUE_SOON
     return TODO_STATUSES.IN_PROGRESS
@@ -174,14 +168,14 @@ export function TodoCard({
                 <>
                   <CircleCheckBig className="size-3 mr-1 shrink-0" />
                   <span className="truncate">
-                    Completed {formatCompletedAt(todo.completedAt)}
+                    Completed {formatToRelativeToNow(todo.dueDate)}
                   </span>
                 </>
               ) : (
                 <>
                   <CircleX className="size-3 mr-1 shrink-0" />
                   <span className="truncate">
-                    {differenceInSeconds(todo.dueDate, new Date()) > 0
+                    {getDifferenceInSecondsToNow(todo.dueDate) > 0
                       ? "Not yet completed"
                       : "Not completed"}
                   </span>
@@ -193,7 +187,7 @@ export function TodoCard({
             <div className="flex items-center">
               <Calendar className="size-3 mr-1 shrink-0" />
               <span className="truncate">
-                Due {getDistanceToNow(todo.dueDate)}
+                Due {formatToDistanceToNow(todo.dueDate)}
               </span>
             </div>
 
@@ -201,7 +195,7 @@ export function TodoCard({
             <div className="flex items-center">
               <RefreshCw className="size-3 mr-1 shrink-0" />
               <span className="truncate">
-                Updated {getDistanceToNow(todo.updatedAt)}
+                Updated {formatToDistanceToNow(todo.updatedAt)}
               </span>
             </div>
 
@@ -209,7 +203,7 @@ export function TodoCard({
             <div className="flex items-center">
               <Clock className="size-3 mr-1 shrink-0" />
               <span className="truncate">
-                Created {getDistanceToNow(todo.createdAt)}
+                Created {formatToDistanceToNow(todo.createdAt)}
               </span>
             </div>
           </div>

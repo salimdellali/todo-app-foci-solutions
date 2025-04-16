@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import { toast } from "sonner"
-import { differenceInSeconds } from "date-fns"
 import { Plus } from "lucide-react"
 import { Todo, TodoInput } from "@/db/schema"
 import { Button } from "@/components/ui/button"
@@ -18,12 +17,13 @@ import {
   toggleCompletedAtTodo,
 } from "@/actions/todos"
 import {
-  FilterOptions,
-  SortOptions,
   FILTER_OPTIONS,
+  FilterOptions,
+  filterTodos,
   SORT_OPTIONS,
-  SECONDS_IN_DAY,
-} from "@/lib/utils"
+  SortOptions,
+  sortTodos,
+} from "@/lib/todos"
 
 export default function RootPage() {
   const [todos, setTodos] = useState<Todo[]>([])
@@ -34,47 +34,7 @@ export default function RootPage() {
     FILTER_OPTIONS.ALL_TASKS
   )
 
-  function filteredTodos(todos: Todo[], filterBy: FilterOptions): Todo[] {
-    return todos.filter((todo) => {
-      if (filterBy === FILTER_OPTIONS.ALL_TASKS) return true
-      if (filterBy === FILTER_OPTIONS.COMPLETED) return !!todo.completedAt
-
-      const secondsToDue = differenceInSeconds(todo.dueDate, new Date())
-
-      if (filterBy === FILTER_OPTIONS.IN_PROGRESS) {
-        return !todo.completedAt && secondsToDue > SECONDS_IN_DAY
-      }
-      if (filterBy === FILTER_OPTIONS.OVERDUE) {
-        return !todo.completedAt && secondsToDue < 0
-      }
-      if (filterBy === FILTER_OPTIONS.DUE_SOON) {
-        return (
-          !todo.completedAt &&
-          secondsToDue >= 0 &&
-          secondsToDue <= SECONDS_IN_DAY
-        )
-      }
-      return true
-    })
-  }
-
-  function sortedTodos(todos: Todo[], sortBy: SortOptions): Todo[] {
-    return todos.sort((a, b) => {
-      if (sortBy === SORT_OPTIONS.LAST_CREATED)
-        return b.createdAt.getTime() - a.createdAt.getTime() // last created comes first
-      if (sortBy === SORT_OPTIONS.LAST_UPDATED)
-        return b.updatedAt.getTime() - a.updatedAt.getTime() // last updated comes first
-      if (sortBy === SORT_OPTIONS.DUE_DATE)
-        return a.dueDate.getTime() - b.dueDate.getTime() // closest due date comes first
-      if (sortBy === SORT_OPTIONS.TITLE) return a.title.localeCompare(b.title) // alphabetical order
-      return 0
-    })
-  }
-
-  const todosToDisplay: Todo[] = sortedTodos(
-    filteredTodos(todos, filterBy),
-    sortBy
-  )
+  const todosToDisplay: Todo[] = sortTodos(filterTodos(todos, filterBy), sortBy)
 
   useEffect(() => {
     async function fetchTodos() {
@@ -127,7 +87,6 @@ export default function RootPage() {
           throw new Error(errorMessage)
         }
         if (deletedTodo) {
-          // Fix: Remove todo with matching id
           setTodos((prevTodos) =>
             prevTodos.filter((prevTodo) => prevTodo.id !== todo.id)
           )

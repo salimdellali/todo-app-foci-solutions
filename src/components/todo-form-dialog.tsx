@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { addDays, format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 import { toast } from "sonner"
 import { Todo, TodoInput } from "@/db/schema"
@@ -29,6 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Calendar } from "@/components/ui/calendar"
+import { getFutureDateFromNow, formatToLongFormDateString } from "@/lib/dates"
 
 type Props = {
   mode: "create" | "update"
@@ -131,7 +131,7 @@ export function TodoFormDialog({
                   <Button variant="outline" className="w-full justify-start">
                     <CalendarIcon />
                     {dueDate ? (
-                      format(dueDate, "PPP")
+                      formatToLongFormDateString(dueDate)
                     ) : (
                       <span>Pick a due date</span>
                     )}
@@ -140,7 +140,7 @@ export function TodoFormDialog({
                 <PopoverContent className="flex w-auto flex-col space-y-2 p-2">
                   <Select
                     onValueChange={(value) =>
-                      setDueDate(addDays(new Date(), parseInt(value)))
+                      setDueDate(getFutureDateFromNow(parseInt(value)))
                     }
                   >
                     <SelectTrigger>

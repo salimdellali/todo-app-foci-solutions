@@ -11,7 +11,7 @@ import {
   SortOptions,
   FILTER_OPTIONS,
   SORT_OPTIONS,
-} from "@/lib/utils"
+} from "@/lib/todos"
 
 type Props = {
   sortBy: SortOptions
